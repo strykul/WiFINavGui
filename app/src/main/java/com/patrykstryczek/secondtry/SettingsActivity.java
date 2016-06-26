@@ -4,28 +4,26 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.patrykstryczek.secondtry.adapter.SettingsAdapter;
+import com.patrykstryczek.secondtry.adapter.SettingsAdapterItem;
+import com.patrykstryczek.secondtry.model.KnownNetwork;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private SettingsAdapter settingsAdapter;
     private ScanningService scanningService;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+
 
 
     @Override
@@ -67,42 +65,36 @@ public class SettingsActivity extends AppCompatActivity {
     };
 
     @Override
-    public void onStart() {
-        super.onStart();
+    protected void onPause() {
+        super.onPause();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Settings Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.patrykstryczek.secondtry/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
+
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    protected void onResume() {
+        super.onResume();
+        if (scanningService != null) {
+            scanningService.startScan(new ScanningService.ScanResultListener() {
+                @Override
+                public void onScanResult(List<KnownNetwork> results) {
+                    List<SettingsAdapterItem> scanResults = new ArrayList<>();
+                    for (KnownNetwork network : results) {
+                        scanResults.add(new SettingsAdapterItem(network, settingsListener);
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Settings Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.patrykstryczek.secondtry/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
+                    }
+                    settingsAdapter.setItems(scanResults);
+
+                }
+            });
+        }
     }
+    private View.OnClickListener settingsListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            //TODO - Dialog for position setting
+
+        }
+    };
 }

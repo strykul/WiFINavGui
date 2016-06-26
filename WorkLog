@@ -1,0 +1,9 @@
+1) Aplikacja startuje w MainActivity - Jeśli mamy nie wybrane sieci, to wyświetlamy popup, żeby user przeszedł do Settings
+2) Przechodzimy do Settings (button na toolbarze?)
+	a) Ładujemy listę sieci (Skan networków (onCreate/onResume) - adapter mamy napisany, obiekt na liście ma checkbox, nazwę sieci oraz button Setting)
+	b) Użytkownik wybiera sieci do nawigacji naciskając checkbox - po naciśnięciu checkboxa highlightujemy element ( jarmark !) 
+	c) Button Settings wywołuje popup (do napisania) w którym user wpisuje PositionX/Y (opcja 2 przyciski, ewentualnie 3, w stylu Przywróc ostatnią znaną pozycję)
+	d) Powrót do MainActivity (back, lub button na toolbarze) 
+3) MainActivity - Mapa (TillView ? / Grafika w png? ) z wyświetlonymi znacznikami (pozycja routerów) i obliczoną pozycją usera (zaznaczyć TODO, gdzie mam napisać logikę do obliczenia pozycji)
+	a) Pozycja usera przeliczana co 5-10 sekund - pasuje ściągać RSSI znanych (zaznaczonych sieci) 
+4) Export pozycji do jsona lub XML i wysłanie -> do ustalenia

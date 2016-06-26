@@ -9,9 +9,10 @@ import com.patrykstryczek.secondtry.model.KnownNetwork;
  */
 public class SettingsAdapterItem extends KnownNetwork {
     private View.OnClickListener onClickListener;
-    public SettingsAdapterItem(boolean isSelected, String ssid, String bssid, Float routerXPosition,
-                               Float routerYPosition, Integer rssiValute, View.OnClickListener onClickListener) {
-        super(isSelected, ssid, bssid, routerXPosition, routerYPosition, rssiValute);
+
+    public SettingsAdapterItem(KnownNetwork knownNetwork, View.OnClickListener onClickListener ){
+        super(false,knownNetwork.getSsid(), knownNetwork.getBssid(), knownNetwork.getRouterXPosition(),
+                knownNetwork.getRouterYPosition(), knownNetwork.getRssiValue() );
         this.onClickListener = onClickListener;
     }
 

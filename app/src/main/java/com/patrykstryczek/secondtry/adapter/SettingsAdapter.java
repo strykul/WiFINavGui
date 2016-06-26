@@ -27,8 +27,9 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
         this.context = context;
     }
 
-    public void setItem(List<SettingsAdapterItem> itemList){
+    public void setItems(List<SettingsAdapterItem> itemList){
         networkList.clear();
+        //TODO Get clicked
         networkList.addAll(itemList);
         notifyDataSetChanged();
     }
@@ -67,6 +68,8 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
             button = (Button) itemView.findViewById(R.id.wifi_settings);
         }
     }
+    
+    
 
 
 }
