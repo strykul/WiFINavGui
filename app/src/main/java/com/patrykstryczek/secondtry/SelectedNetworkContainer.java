@@ -15,8 +15,8 @@ import java.util.Set;
 public class SelectedNetworkContainer {
 
     private static final SelectedNetworkContainer INSTANCE = new SelectedNetworkContainer();
-    private SelectedNetworkContainer{
-    }
+    private SelectedNetworkContainer(){
+    };
 
     private Set<KnownNetwork> selectedNetworks = new HashSet<>();
 

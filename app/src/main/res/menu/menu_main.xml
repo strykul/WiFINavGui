@@ -7,10 +7,5 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
-    <item
-
-        />
-        <!-- Another item of three dots above -->
-
 
 </menu>

@@ -3,16 +3,20 @@ package com.patrykstryczek.secondtry.model;
 import android.content.DialogInterface;
 import android.view.View;
 
+import io.realm.RealmObject;
+
 /**
  * Created by admiral on 15.05.16.
  */
-public class KnownNetwork {
+public class KnownNetwork extends RealmObject {
     private boolean isSelected;
     private String ssid;
     private String bssid;
     private Float routerXPosition;
     private Float routerYPosition;
     private Integer rssiValue;
+
+    public KnownNetwork(){};
 
     public KnownNetwork(String ssid, String bssid, Integer rssiValue){
         this(false, ssid, bssid, null, null, rssiValue);

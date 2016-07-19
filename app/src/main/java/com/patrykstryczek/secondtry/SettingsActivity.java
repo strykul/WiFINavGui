@@ -1,7 +1,9 @@
 package com.patrykstryczek.secondtry;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
@@ -10,10 +12,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 
 import com.patrykstryczek.secondtry.adapter.SettingsAdapter;
-import com.patrykstryczek.secondtry.adapter.SettingsAdapterItem;
 import com.patrykstryczek.secondtry.model.KnownNetwork;
 
 import java.util.ArrayList;
@@ -78,23 +82,12 @@ public class SettingsActivity extends AppCompatActivity {
             scanningService.startScan(new ScanningService.ScanResultListener() {
                 @Override
                 public void onScanResult(List<KnownNetwork> results) {
-                    List<SettingsAdapterItem> scanResults = new ArrayList<>();
-                    for (KnownNetwork network : results) {
-                        scanResults.add(new SettingsAdapterItem(network, settingsListener);
-
-                    }
-                    settingsAdapter.setItems(scanResults);
-
+                    settingsAdapter.setItems(results);
+                    Log.d("LOG", results.toString());
                 }
             });
         }
-    }
-    private View.OnClickListener settingsListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
 
-            //TODO - Dialog for position setting
-
-        }
     };
+
 }
