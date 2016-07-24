@@ -7,10 +7,12 @@
         android:id="@+id/x_position"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Please insert X-position of Router"/>
+        android:hint="Please insert X-position of Router"
+        android:inputType="number"/>
     <EditText
         android:id="@+id/y_position"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Please insert Y-position of Router"/>
+        android:hint="Please insert Y-position of Router"
+        android:inputType="number"/>
 </LinearLayout>

@@ -4,8 +4,9 @@
     <string name="wifi_settings_button">Setup</string>
     <string name="dialog_message">No network selected!</string>
     <string name="dialog_title">Warning!</string>
-    <string name="ok">Settings</string>
+    <string name="ok">Save</string>
     <string name="cancel">Cancel</string>
     <string name="position_insert">Please insert router\'s position</string>
     <string name="position">Details</string>
+    <string name="ok1">Settings</string>
 </resources>

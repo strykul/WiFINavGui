@@ -15,6 +15,7 @@ import com.patrykstryczek.secondtry.model.KnownNetwork;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
 
 
 public class ScanningService extends Service {
@@ -23,7 +24,7 @@ public class ScanningService extends Service {
     private WifiManager wifiManager;
     private WiFiReceiver wifiReceiver;
     private ScanResultListener scanResultListener;
-
+    private Realm realm;
     public ScanningService() {
     }
 
@@ -33,12 +34,14 @@ public class ScanningService extends Service {
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         wifiReceiver = new WiFiReceiver();
         registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        realm = Realm.getDefaultInstance();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(wifiReceiver);
+        realm.close();
     }
 
     @Override
@@ -49,6 +52,7 @@ public class ScanningService extends Service {
     public void startScan(ScanResultListener listener){
         this.scanResultListener = listener;
         wifiManager.startScan();
+
     }
 
     public class WiFiReceiver extends BroadcastReceiver {
@@ -60,8 +64,13 @@ public class ScanningService extends Service {
             }
 
             if (scanResultListener != null){
+                Realm realm = Realm.getDefaultInstance();
+                realm.beginTransaction();
+                knownNetworks = realm.copyToRealmOrUpdate(knownNetworks);
                 scanResultListener.onScanResult(knownNetworks);
                 scanResultListener = null;
+
+                realm.commitTransaction();
             }
         }
     }
@@ -78,3 +87,4 @@ public class ScanningService extends Service {
         void onScanResult(List<KnownNetwork> results);
     }
 }
+

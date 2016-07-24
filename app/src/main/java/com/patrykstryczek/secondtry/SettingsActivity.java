@@ -59,6 +59,8 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             scanningService = ((ScanningService.ScanningServiceBinder) service).getService();
+            startScanning();
+
         }
 
         @Override
@@ -78,6 +80,11 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        startScanning();
+
+    };
+
+    private void startScanning(){
         if (scanningService != null) {
             scanningService.startScan(new ScanningService.ScanResultListener() {
                 @Override
@@ -87,7 +94,6 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
         }
-
-    };
+    }
 
 }

@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.view.View;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by admiral on 15.05.16.
@@ -11,6 +12,7 @@ import io.realm.RealmObject;
 public class KnownNetwork extends RealmObject {
     private boolean isSelected;
     private String ssid;
+    @PrimaryKey
     private String bssid;
     private Float routerXPosition;
     private Float routerYPosition;
@@ -64,5 +66,8 @@ public class KnownNetwork extends RealmObject {
         this.routerYPosition = routerYPosition;
     }
 
+    public void setSelected(boolean selected) {
+        this.isSelected = selected;
+    }
 }
 
