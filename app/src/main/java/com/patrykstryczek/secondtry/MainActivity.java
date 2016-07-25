@@ -10,7 +10,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.patrykstryczek.secondtry.model.KnownNetwork;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 public class MainActivity extends AppCompatActivity {
+    private Integer NaviPoints = 3;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +32,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<KnownNetwork> results = realm.where(KnownNetwork.class)
+                .equalTo("isSelected", true).findAll();
+
+        if (results.size() != NaviPoints) {
+            showSettingsAlertDialog();
+        }
     }
 
     @Override
@@ -69,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+        builder.show();
 
     }
 

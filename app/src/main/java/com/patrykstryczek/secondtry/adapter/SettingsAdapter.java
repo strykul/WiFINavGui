@@ -44,8 +44,11 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
     }
 
     public void setItems(List<KnownNetwork> itemList){
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        itemList = realm.copyToRealmOrUpdate(itemList);
+        realm.commitTransaction();
         networkList.clear();
-        //TODO Get clicked
         networkList.addAll(itemList);
         notifyDataSetChanged();
     }
@@ -97,12 +100,6 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
             button = (Button) itemView.findViewById(R.id.wifi_settings);
         }
     }
-
-    private View.OnClickListener settingsListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-        }
-    };
 
     private void showRouterPositionSettings(final KnownNetwork knownNetwork){
         LayoutInflater inflater = LayoutInflater.from(activity);

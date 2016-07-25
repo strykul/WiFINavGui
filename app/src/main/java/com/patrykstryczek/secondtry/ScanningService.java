@@ -64,13 +64,9 @@ public class ScanningService extends Service {
             }
 
             if (scanResultListener != null){
-                Realm realm = Realm.getDefaultInstance();
-                realm.beginTransaction();
-                knownNetworks = realm.copyToRealmOrUpdate(knownNetworks);
                 scanResultListener.onScanResult(knownNetworks);
                 scanResultListener = null;
 
-                realm.commitTransaction();
             }
         }
     }

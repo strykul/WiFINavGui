@@ -82,6 +82,8 @@ public class SettingsActivity extends AppCompatActivity {
         super.onResume();
         startScanning();
 
+        //TODO Add saving checked items of the list
+
     };
 
     private void startScanning(){
