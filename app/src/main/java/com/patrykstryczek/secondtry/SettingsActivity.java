@@ -98,4 +98,9 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+
+    public void onDeleteClick(View view){
+        settingsAdapter.selectionDeleter();
+        startScanning();
+    }
 }

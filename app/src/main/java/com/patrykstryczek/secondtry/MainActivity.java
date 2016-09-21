@@ -1,22 +1,34 @@
 package com.patrykstryczek.secondtry;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.patrykstryczek.secondtry.model.KnownNetwork;
+
+import java.io.IOException;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int FILE_SELECT_CODE = 0;
     private Integer NaviPoints = 3;
+
+
 
 
     @Override
@@ -33,12 +45,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<KnownNetwork> results = realm.where(KnownNetwork.class)
+        final RealmResults<KnownNetwork> results = realm.where(KnownNetwork.class)
                 .equalTo("isSelected", true).findAll();
 
         if (results.size() != NaviPoints) {
             showSettingsAlertDialog();
+        }else{
+            //TODO Use Canvas to draw damn routers positions
         }
+
     }
 
     @Override
@@ -62,10 +77,43 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         }
+        else if (id == R.id.load_img){
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            //intent.setType("*/*");      //all files
+            intent.setType("image/*");
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+            try {
+                startActivityForResult(Intent.createChooser(intent, "Select a File to Load"), FILE_SELECT_CODE);
+            } catch (android.content.ActivityNotFoundException ex) {
+                // Potentially direct the user to the Market with a Dialog
+                Toast.makeText(this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();
+            }
+
+        }
 
 //      else if (id == R.id.another ...)
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(FILE_SELECT_CODE, resultCode, data);
+        if(resultCode==RESULT_CANCELED)
+        {
+            // action cancelled
+        }
+        if(resultCode==RESULT_OK) {
+            Uri selectedimg = data.getData();
+
+            try {
+                ImageView imageView = (ImageView) findViewById(R.id.map_loaded);
+                imageView.setImageBitmap(MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedimg));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void showSettingsAlertDialog(){
@@ -86,5 +134,25 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
 
     }
+/*
+    private void onDraw(Canvas canvas){
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<KnownNetwork>  results = new RealmResults<KnownNetwork>;
+        results = realm.where(KnownNetwork.class)
+                .equalTo("isSelected", true).findAll();
+        Paint pendzel = new Paint();
+        //pierwszy NaviPoint
+        for (int n = 0; n<results.size(); n++){
+            KnownNetwork curr = results.get(n);
+            canvas.drawLine(curr.getRouterXPosition()-5f,curr.getRouterYPosition()-5f,
+                    curr.getRouterXPosition()+5f,curr.getRouterYPosition()+5f,pendzel);
+        }
+    }
+
+    class CanvasView extends View {
+        public CanvasView(Context context) {
+            super(context);
+        }
+*/
 
 }

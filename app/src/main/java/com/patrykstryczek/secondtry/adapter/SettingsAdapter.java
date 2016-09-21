@@ -137,4 +137,13 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
         });
         builder.show();
     }
+
+    public void selectionDeleter(){
+        realm.beginTransaction();
+        realm.delete(KnownNetwork.class);
+        realm.commitTransaction();
+        networkList.clear();
+        notifyDataSetChanged();
+
+    }
 }

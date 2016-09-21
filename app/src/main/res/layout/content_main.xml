@@ -10,9 +10,10 @@
 
 
     <ImageView
+        android:id="@+id/map_loaded"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ff0000"/>
+        android:background="#0000"/>
 
     //INFO Rozmiar ImageView na Nexus 5X 1080x1584
 
