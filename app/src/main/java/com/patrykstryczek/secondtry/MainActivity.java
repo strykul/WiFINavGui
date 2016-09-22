@@ -134,25 +134,9 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
 
     }
-/*
-    private void onDraw(Canvas canvas){
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<KnownNetwork>  results = new RealmResults<KnownNetwork>;
-        results = realm.where(KnownNetwork.class)
-                .equalTo("isSelected", true).findAll();
-        Paint pendzel = new Paint();
-        //pierwszy NaviPoint
-        for (int n = 0; n<results.size(); n++){
-            KnownNetwork curr = results.get(n);
-            canvas.drawLine(curr.getRouterXPosition()-5f,curr.getRouterYPosition()-5f,
-                    curr.getRouterXPosition()+5f,curr.getRouterYPosition()+5f,pendzel);
-        }
-    }
 
-    class CanvasView extends View {
-        public CanvasView(Context context) {
-            super(context);
-        }
-*/
+
+
+
 
 }
