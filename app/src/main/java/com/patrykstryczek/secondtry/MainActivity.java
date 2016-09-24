@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,8 @@ import io.realm.RealmResults;
 public class MainActivity extends AppCompatActivity {
     private static final int FILE_SELECT_CODE = 0;
     private Integer NaviPoints = 3;
+
+    private Calculations calculations = new Calculations();
 
 
 
@@ -49,9 +52,10 @@ public class MainActivity extends AppCompatActivity {
                 .equalTo("isSelected", true).findAll();
 
         if (results.size() != NaviPoints) {
-            showSettingsAlertDialog();
+            //showSettingsAlertDialog();
+            calculations.positionOfUser(results);
         }else{
-            //TODO Use Canvas to draw damn routers positions
+            //TODO
         }
 
     }
