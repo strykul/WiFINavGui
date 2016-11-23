@@ -47,15 +47,11 @@ public class Calculations {
 //        distances.add(1,3.605d);
 //        distances.add(2,4.242d);
         for (int n = 0; n < results.size(); n++) {
-
-
+            
             xpos.add(n,(double)results.get(n).getRouterXPosition());
             poweredxpos.add(n,Math.pow(xpos.get(n),2));
             ypos.add(n,(double)results.get(n).getRouterYPosition());
             poweredypos.add(n,Math.pow(ypos.get(n),2));
-
-
-
 
             distances.add(n, dc.DistanceFromRSSI(results.get(n).getRssiValue()));
             powereddistances.add(n,Math.pow(distances.get(n),2));

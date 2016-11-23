@@ -45,16 +45,16 @@ public class CanvasView extends View {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<KnownNetwork> results = realm.where(KnownNetwork.class)
                 .equalTo("isSelected", true).findAll();
-        Paint pendzel = new Paint();
+        Paint pedzel = new Paint();
         //Drawing navipoints
         for (int n = 0; n < results.size(); n++) {
             KnownNetwork curr = results.get(n);
             canvas.drawLine(curr.getRouterXPosition() - 50f, curr.getRouterYPosition(),
-                    curr.getRouterXPosition() + 50f, curr.getRouterYPosition(), pendzel);
+                    curr.getRouterXPosition() + 50f, curr.getRouterYPosition(), pedzel);
             canvas.drawLine(curr.getRouterXPosition(), curr.getRouterYPosition() - 50f,
-                    curr.getRouterXPosition(), curr.getRouterYPosition() + 50f, pendzel);
+                    curr.getRouterXPosition(), curr.getRouterYPosition() + 50f, pedzel);
 
-            canvas.drawCircle(curr.getRouterXPosition(), curr.getRouterYPosition(), radius, pendzel);
+            canvas.drawCircle(curr.getRouterXPosition(), curr.getRouterYPosition(), radius, pedzel);
         }
     }
 }
