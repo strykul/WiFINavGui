@@ -1,17 +1,21 @@
 package com.patrykstryczek.secondtry;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +26,8 @@ import com.patrykstryczek.secondtry.model.KnownNetwork;
 import com.patrykstryczek.secondtry.model.Position;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -29,9 +35,13 @@ import io.realm.RealmResults;
 public class MainActivity extends AppCompatActivity {
     private static final int FILE_SELECT_CODE = 0;
     private Integer NaviPoints = 3;
-
-
     private Calculations calculations = new Calculations();
+    private CanvasView my_canvas;
+    private ScanningService scanningService;
+    private RealmResults<KnownNetwork> scanningResults;
+
+
+
 
 
 
@@ -42,14 +52,45 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        bindService(new Intent(this, ScanningService.class), connection, Context.BIND_AUTO_CREATE);
+        my_canvas  = (CanvasView) findViewById(R.id.my_canvas);
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Realm realm = Realm.getDefaultInstance();
+
+        scanningResults = realm.where(KnownNetwork.class)
+                .equalTo("isSelected", true).findAll();
+
     }
+
+    @Override
+    protected void onDestroy() {
+        unbindService(connection);
+        super.onDestroy();
+
+
+    }
+
+    private ServiceConnection connection = new ServiceConnection() {
+
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            scanningService = ((ScanningService.ScanningServiceBinder) service).getService();
+            startScanning();
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            scanningService = null;
+
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -85,16 +126,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();
             }
 
-        }
-
-       else if (id == R.id.refresh){
-            CanvasView my_canvas = (CanvasView) findViewById(R.id.my_canvas);
-            Realm realm = Realm.getDefaultInstance();
-            RealmResults<KnownNetwork> results = realm.where(KnownNetwork.class)
-                    .equalTo("isSelected", true).findAll();;
-
-            Position userCurr = calculations.positionOfUser(results);
-            my_canvas.updatePositionOfUser(userCurr);
         }
 
         return super.onOptionsItemSelected(item);
@@ -137,7 +168,26 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
 
     }
+    private void startScanning(){
+        if (scanningService != null) {
+            scanningService.startScan(new ScanningService.ScanResultListener() {
+                @Override
+                public void onScanResult(List<KnownNetwork> results) {
+                    List<KnownNetwork> updatedNetworks = new ArrayList<KnownNetwork>();
 
+                    for(KnownNetwork network : results){
+                        if(scanningResults.contains(network)){
+                            updatedNetworks.add(network);
+                        }
+                    }
+                    Position userCurr = calculations.positionOfUser(updatedNetworks);
+                    my_canvas.updatePositionOfUser(userCurr);
+                    startScanning();
+                }
+            });
+        }
+
+    }
 
 
 

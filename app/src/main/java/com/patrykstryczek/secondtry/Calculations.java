@@ -6,6 +6,7 @@ import com.patrykstryczek.secondtry.DistanceCalculator;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -20,7 +21,7 @@ public class Calculations {
     private static Position position = new Position(xposition, yposition);
     private DistanceCalculator dc = new DistanceCalculator();
 
-    public Position positionOfUser(RealmResults<KnownNetwork> results){
+    public Position positionOfUser(List<KnownNetwork> results){
         ArrayList<Double> distances = new ArrayList<>();
         ArrayList<Double> powereddistances = new ArrayList<>();
         //User Position
