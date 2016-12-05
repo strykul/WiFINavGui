@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.patrykstryczek.secondtry.model.KnownNetwork;
+import com.patrykstryczek.secondtry.model.Position;
 
 import java.io.IOException;
 
@@ -28,6 +29,7 @@ import io.realm.RealmResults;
 public class MainActivity extends AppCompatActivity {
     private static final int FILE_SELECT_CODE = 0;
     private Integer NaviPoints = 3;
+
 
     private Calculations calculations = new Calculations();
 
@@ -47,17 +49,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Realm realm = Realm.getDefaultInstance();
-        final RealmResults<KnownNetwork> results = realm.where(KnownNetwork.class)
-                .equalTo("isSelected", true).findAll();
-
-        if (results.size() != NaviPoints) {
-            //showSettingsAlertDialog();
-            calculations.positionOfUser(results);
-        }else{
-            //TODO
-        }
-
     }
 
     @Override
@@ -96,7 +87,15 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-//      else if (id == R.id.another ...)
+       else if (id == R.id.refresh){
+            CanvasView my_canvas = (CanvasView) findViewById(R.id.my_canvas);
+            Realm realm = Realm.getDefaultInstance();
+            RealmResults<KnownNetwork> results = realm.where(KnownNetwork.class)
+                    .equalTo("isSelected", true).findAll();;
+
+            Position userCurr = calculations.positionOfUser(results);
+            my_canvas.updatePositionOfUser(userCurr);
+        }
 
         return super.onOptionsItemSelected(item);
     }

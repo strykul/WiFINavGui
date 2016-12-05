@@ -15,9 +15,10 @@
         android:layout_height="match_parent"
         android:background="#0000"/>
     <com.patrykstryczek.secondtry.CanvasView
+        android:id="@+id/my_canvas"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     //INFO Rozmiar ImageView na Nexus 5X 1080x1584
-
+f
 </FrameLayout>
