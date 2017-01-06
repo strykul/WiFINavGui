@@ -69,5 +69,34 @@ public class KnownNetwork extends RealmObject {
     public void setSelected(boolean selected) {
         this.isSelected = selected;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        KnownNetwork that = (KnownNetwork) o;
+
+        if (isSelected != that.isSelected) return false;
+        if (ssid != null ? !ssid.equals(that.ssid) : that.ssid != null) return false;
+        if (bssid != null ? !bssid.equals(that.bssid) : that.bssid != null) return false;
+        if (routerXPosition != null ? !routerXPosition.equals(that.routerXPosition) : that.routerXPosition != null)
+            return false;
+        if (routerYPosition != null ? !routerYPosition.equals(that.routerYPosition) : that.routerYPosition != null)
+            return false;
+        return rssiValue != null ? rssiValue.equals(that.rssiValue) : that.rssiValue == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (isSelected ? 1 : 0);
+        result = 31 * result + (ssid != null ? ssid.hashCode() : 0);
+        result = 31 * result + (bssid != null ? bssid.hashCode() : 0);
+        result = 31 * result + (routerXPosition != null ? routerXPosition.hashCode() : 0);
+        result = 31 * result + (routerYPosition != null ? routerYPosition.hashCode() : 0);
+        result = 31 * result + (rssiValue != null ? rssiValue.hashCode() : 0);
+        return result;
+    }
 }
 

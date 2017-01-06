@@ -65,7 +65,6 @@ public class ScanningService extends Service {
 
             if (scanResultListener != null){
                 scanResultListener.onScanResult(knownNetworks);
-                scanResultListener = null;
 
             }
         }

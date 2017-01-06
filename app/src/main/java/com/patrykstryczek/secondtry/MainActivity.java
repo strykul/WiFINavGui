@@ -65,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
         scanningResults = realm.where(KnownNetwork.class)
                 .equalTo("isSelected", true).findAll();
 
+        if (scanningService != null){
+            startScanning();
+        }
+
     }
 
     @Override
@@ -170,21 +174,25 @@ public class MainActivity extends AppCompatActivity {
     }
     private void startScanning(){
         if (scanningService != null) {
-            scanningService.startScan(new ScanningService.ScanResultListener() {
+                    scanningService.startScan(new ScanningService.ScanResultListener() {
                 @Override
                 public void onScanResult(List<KnownNetwork> results) {
                     List<KnownNetwork> updatedNetworks = new ArrayList<KnownNetwork>();
 
-                    for(KnownNetwork network : results){
-                        if(scanningResults.contains(network)){
+                    for (KnownNetwork network : results) {
+                        if (scanningResults.contains(network)) {
                             updatedNetworks.add(network);
+                            Log.d("Main","Updated RSSI of selected Network " + network.getSsid() + " : " + network.getRssiValue());
                         }
                     }
-                    Position userCurr = calculations.positionOfUser(updatedNetworks);
-                    my_canvas.updatePositionOfUser(userCurr);
+                    if (updatedNetworks.size() == 3) {
+                        Position userCurr = calculations.positionOfUser(updatedNetworks);
+                        my_canvas.updatePositionOfUser(userCurr);
+                    }
                     startScanning();
                 }
             });
+
         }
 
     }
