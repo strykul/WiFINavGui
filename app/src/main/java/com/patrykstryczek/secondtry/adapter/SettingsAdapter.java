@@ -121,6 +121,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
                     realm.beginTransaction();
                     knownNetwork.setRouterXPosition(Float.parseFloat(xposition.getText().toString()));
                     knownNetwork.setRouterYPosition(Float.parseFloat(yposition.getText().toString()));
+                    realm.copyToRealmOrUpdate(knownNetwork);
                     realm.commitTransaction();
                 }
                 catch(NumberFormatException e)

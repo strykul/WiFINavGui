@@ -1,17 +1,21 @@
 package com.patrykstryczek.secondtry;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -34,6 +38,7 @@ import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
     private static final int FILE_SELECT_CODE = 0;
+    private static final int PERMISSION_FINE_LOCATION = 3;
     private Integer NaviPoints = 3;
     private Calculations calculations = new Calculations();
     private CanvasView my_canvas;
@@ -55,6 +60,29 @@ public class MainActivity extends AppCompatActivity {
         bindService(new Intent(this, ScanningService.class), connection, Context.BIND_AUTO_CREATE);
         my_canvas  = (CanvasView) findViewById(R.id.my_canvas);
 
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSION_FINE_LOCATION);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startScanning();
+                }
+            }
+        }
     }
 
     @Override
@@ -174,15 +202,20 @@ public class MainActivity extends AppCompatActivity {
     }
     private void startScanning(){
         if (scanningService != null) {
-                    scanningService.startScan(new ScanningService.ScanResultListener() {
+            scanningService.startScan(new ScanningService.ScanResultListener() {
                 @Override
                 public void onScanResult(List<KnownNetwork> results) {
                     List<KnownNetwork> updatedNetworks = new ArrayList<KnownNetwork>();
 
                     for (KnownNetwork network : results) {
-                        if (scanningResults.contains(network)) {
-                            updatedNetworks.add(network);
-                            Log.d("Main","Updated RSSI of selected Network " + network.getSsid() + " : " + network.getRssiValue());
+                        for (KnownNetwork network1 : scanningResults) {
+                            if (network.getBssid().equals(network1.getBssid())) {
+                                network.setRouterXPosition(network1.getRouterXPosition());
+                                network.setRouterYPosition(network1.getRouterYPosition());
+                                updatedNetworks.add(network);
+                                Log.d("Main","Updated RSSI of selected Network " + network.getSsid() + " : " + network.getRssiValue());
+                                break;
+                            }
                         }
                     }
                     if (updatedNetworks.size() == 3) {

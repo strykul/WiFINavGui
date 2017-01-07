@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.patrykstryczek.secondtry.adapter.SettingsAdapter;
@@ -28,6 +29,8 @@ public class SettingsActivity extends AppCompatActivity {
     private SettingsAdapter settingsAdapter;
     private ScanningService scanningService;
 
+    private Button clearSelectionButton;
+
 
 
     @Override
@@ -36,6 +39,10 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        clearSelectionButton = (Button) findViewById(R.id.clear_all);
+        clearSelectionButton.setOnClickListener(onDeleteClickListener);
+
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view_settings);
         settingsAdapter = new SettingsAdapter(this);
         if (recyclerView != null) {
@@ -51,6 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onDestroy();
         unbindService(connection);
 
+        clearSelectionButton.setOnClickListener(null);
     }
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -81,7 +89,6 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         startScanning();
-
         //TODO Add saving checked items of the list
 
     };
@@ -93,14 +100,19 @@ public class SettingsActivity extends AppCompatActivity {
                 public void onScanResult(List<KnownNetwork> results) {
                     settingsAdapter.setItems(results);
                     Log.d("LOG", results.toString());
+                    if (scanningService != null) {
+                        scanningService.startScan(null);
+                    }
                 }
             });
         }
     }
 
-
-    public void onDeleteClick(View view){
-        settingsAdapter.selectionDeleter();
-        startScanning();
-    }
+    private View.OnClickListener onDeleteClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            settingsAdapter.selectionDeleter();
+            startScanning();
+        }
+    };
 }

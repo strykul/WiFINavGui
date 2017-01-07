@@ -23,7 +23,7 @@ public class Calculations {
 
     public Position positionOfUser(List<KnownNetwork> results){
         ArrayList<Double> distances = new ArrayList<>();
-        ArrayList<Double> powereddistances = new ArrayList<>();
+        ArrayList<Double> poweredDistances = new ArrayList<>();
         //User Position
         double va;
         //Calculation ingredients
@@ -57,10 +57,10 @@ public class Calculations {
             poweredypos.add(n,Math.pow(ypos.get(n),2));
 
             distances.add(n, dc.DistanceFromRSSI(results.get(n).getRssiValue()));
-            powereddistances.add(n,Math.pow(distances.get(n),2));
+            poweredDistances.add(n,Math.pow(distances.get(n),2));
         }
-        va = ((powereddistances.get(1)-powereddistances.get(2))-(poweredxpos.get(1)-poweredxpos.get(2))-(poweredypos.get(1)-poweredypos.get(2)))/2d;
-        vb = ((powereddistances.get(1)-powereddistances.get(0))-(poweredxpos.get(1)-poweredxpos.get(0))-(poweredypos.get(1)-poweredypos.get(0)))/2d;
+        va = ((poweredDistances.get(1)-poweredDistances.get(2))-(poweredxpos.get(1)-poweredxpos.get(2))-(poweredypos.get(1)-poweredypos.get(2)))/2d;
+        vb = ((poweredDistances.get(1)-poweredDistances.get(0))-(poweredxpos.get(1)-poweredxpos.get(0))-(poweredypos.get(1)-poweredypos.get(0)))/2d;
         yposition = (float) (((vb) * (xpos.get(2) - xpos.get(1)) - ((va) * (xpos.get(0) - xpos.get(1)))) / (((ypos.get(0) - ypos.get(1)) * (xpos.get(2) - xpos.get(1))) - ((ypos.get(2) - ypos.get(1)) * (xpos.get(0) - xpos.get(1)))));
         xposition = (float) ((va-(yposition*(ypos.get(2)-ypos.get(1))))/(xpos.get(2)-xpos.get(1)));
         position.setXposition(xposition);
