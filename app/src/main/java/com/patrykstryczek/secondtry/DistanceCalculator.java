@@ -13,6 +13,7 @@ public class DistanceCalculator {
     public double DistanceFromRSSI(Integer rssi){
        double distance = 0d;
        distance = Math.pow(10d, (rssi - aValue)/(-20d)) ;
+        distance = distance * 100d;
     return distance;
     }
 

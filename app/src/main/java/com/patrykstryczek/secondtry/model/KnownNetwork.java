@@ -70,6 +70,8 @@ public class KnownNetwork extends RealmObject {
         this.isSelected = selected;
     }
 
+    public void setRssiValue(Integer newRssi){ this.rssiValue = newRssi;}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -10,6 +10,10 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
+import android.hardware.TriggerEvent;
+import android.hardware.TriggerEventListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -31,7 +35,9 @@ import com.patrykstryczek.secondtry.model.Position;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -39,14 +45,16 @@ import io.realm.RealmResults;
 public class MainActivity extends AppCompatActivity {
     private static final int FILE_SELECT_CODE = 0;
     private static final int PERMISSION_FINE_LOCATION = 3;
+    private Map<String, List<Integer>> rssiHistory = new HashMap<String, List<Integer>>();
     private Integer NaviPoints = 3;
     private Calculations calculations = new Calculations();
     private CanvasView my_canvas;
     private ScanningService scanningService;
     private RealmResults<KnownNetwork> scanningResults;
-
-
-
+    //Sensors
+    private SensorManager mSensorManager;
+    private Sensor mSigMotion;
+    private TriggerEventListener mTriggerEventListener;
 
 
 
@@ -69,6 +77,19 @@ public class MainActivity extends AppCompatActivity {
                     PERMISSION_FINE_LOCATION);
         }
 
+        //sensors
+        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        mSigMotion = mSensorManager.getDefaultSensor(Sensor.TYPE_SIGNIFICANT_MOTION);
+        mTriggerEventListener = new TriggerEventListener(){
+
+            @Override
+            public void onTrigger(TriggerEvent triggerEvent) {
+                rssiHistory.clear();
+            }
+        };
+        if (mSigMotion == null) {
+        }
+
     }
 
     @Override
@@ -86,6 +107,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        if (mSigMotion != null) mSensorManager.cancelTriggerSensor(mTriggerEventListener, mSigMotion);
+        super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        if (mSigMotion != null) mSensorManager.cancelTriggerSensor(mTriggerEventListener, mSigMotion);
+        super.onPause();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         Realm realm = Realm.getDefaultInstance();
@@ -96,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         if (scanningService != null){
             startScanning();
         }
+        if (mSigMotion != null && mSensorManager.requestTriggerSensor(mTriggerEventListener, mSigMotion));
 
     }
 
@@ -103,8 +137,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         unbindService(connection);
         super.onDestroy();
-
-
     }
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -213,13 +245,22 @@ public class MainActivity extends AppCompatActivity {
                                 network.setRouterXPosition(network1.getRouterXPosition());
                                 network.setRouterYPosition(network1.getRouterYPosition());
                                 updatedNetworks.add(network);
-                                Log.d("Main","Updated RSSI of selected Network " + network.getSsid() + " : " + network.getRssiValue());
+
+                                if(rssiHistory.containsKey(network.getBssid())){
+                                    rssiHistory.get(network.getBssid()).add(network.getRssiValue());
+                                }else{
+                                    List<Integer> rssiPrev = new ArrayList<Integer>();
+                                    rssiPrev.add(network.getRssiValue());
+                                    rssiHistory.put(network.getBssid(),rssiPrev);
+                                }
+                                //Log.d("Main","Updated RSSI of selected Network " + network.getSsid() + " : " + network.getRssiValue());
                                 break;
                             }
                         }
+
                     }
                     if (updatedNetworks.size() == 3) {
-                        Position userCurr = calculations.positionOfUser(updatedNetworks);
+                        Position userCurr = calculations.positionOfUser(updatedNetworks, rssiHistory);
                         my_canvas.updatePositionOfUser(userCurr);
                     }
                     startScanning();
@@ -229,6 +270,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
 
 
 

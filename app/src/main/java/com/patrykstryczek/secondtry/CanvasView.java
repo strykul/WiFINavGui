@@ -2,6 +2,7 @@ package com.patrykstryczek.secondtry;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.test.RenamingDelegatingContext;
 import android.util.AttributeSet;
@@ -26,10 +27,14 @@ public class CanvasView extends View {
     Integer BX = 1015;
     Integer CX = BX;
     Integer DX = AX;
-    Integer AY = 229;
+    Integer AY = 204;
     Integer BY = AY;
-    Integer CY = 1354;
+    Integer CY = 1380;
     Integer DY = CY;
+    Float Trans = 2.52f;
+    Integer SignLength = 25;
+
+
 
 
     public CanvasView(Context context) {
@@ -59,26 +64,31 @@ public class CanvasView extends View {
         RealmResults<KnownNetwork> results = realm.where(KnownNetwork.class)
                 .equalTo("isSelected", true).findAll();
         Paint pedzel = new Paint();
-        Paint pedzel2 = new Paint();
-        pedzel2.setColor(16711681);
+        Paint pedzel2 = new Paint(Color.RED);
+        pedzel2.setColor(0);
         //Drawing navipoints
         for (int n = 0; n < results.size(); n++) {
             KnownNetwork curr = results.get(n);
             if (curr != null && curr.getRouterYPosition() != null && curr.getRouterXPosition() != null) {
-                canvas.drawLine(curr.getRouterXPosition() - 50f, curr.getRouterYPosition(),
-                        curr.getRouterXPosition() + 50f, curr.getRouterYPosition(), pedzel);
-                canvas.drawLine(curr.getRouterXPosition(), curr.getRouterYPosition() - 50f,
-                        curr.getRouterXPosition(), curr.getRouterYPosition() + 50f, pedzel);
+                float rx = (curr.getRouterXPosition() * Trans) + AX;
+                float ry = (curr.getRouterYPosition()  * Trans) + AY;
+                        canvas.drawLine(rx - SignLength, ry,
+                        rx +  SignLength, ry, pedzel);
+                canvas.drawLine(rx, ry - SignLength,
+                        rx, ry + SignLength, pedzel);
 
-                canvas.drawCircle(curr.getRouterXPosition(), curr.getRouterYPosition(), radius, pedzel);
+                canvas.drawCircle(rx, ry, radius, pedzel);
             }
         }
         if(userCurr != null) {
-            canvas.drawLine(userCurr.getXposition() - 50f, userCurr.getYposition(),
-                    userCurr.getXposition() + 50f, userCurr.getYposition(), pedzel);
-            canvas.drawLine(userCurr.getXposition(), userCurr.getYposition() - 50f,
-                    userCurr.getXposition(), userCurr.getYposition() + 50f, pedzel);
-            canvas.drawCircle(userCurr.getXposition(), userCurr.getYposition(), radius, pedzel2);
+            float rx = (userCurr.getXposition() * Trans) + AX;
+            float ry = (userCurr.getYposition()  * Trans) + AY;
+            canvas.drawLine(rx/10 - SignLength, ry/10,
+                    rx/10 + SignLength, ry/10, pedzel);
+            canvas.drawLine(rx/10,
+                    ry/10 - SignLength,
+                    rx/10, ry/10 + SignLength, pedzel);
+            canvas.drawCircle(rx/10, ry/10, radius, pedzel2);
         }
         //Sciana AB
         canvas.drawLine(AX, AY, BX, BY, pedzel);
