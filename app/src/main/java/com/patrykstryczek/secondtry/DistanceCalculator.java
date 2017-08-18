@@ -8,7 +8,7 @@ import com.patrykstryczek.secondtry.model.KnownNetwork;
 
 public class DistanceCalculator {
     //Value of RSSO at distance of 1m
-    private static double aValue = -36d;
+    private static double aValue = -45d;
 
     public double DistanceFromRSSI(Integer rssi){
        double distance = 0d;

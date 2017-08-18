@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
                                     rssiPrev.add(network.getRssiValue());
                                     rssiHistory.put(network.getBssid(),rssiPrev);
                                 }
-                                //Log.d("Main","Updated RSSI of selected Network " + network.getSsid() + " : " + network.getRssiValue());
+                                Log.d("Main","Updated RSSI of selected Network " + network.getSsid() + " : " + network.getRssiValue());
                                 break;
                             }
                         }

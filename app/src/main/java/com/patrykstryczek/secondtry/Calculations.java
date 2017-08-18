@@ -7,6 +7,7 @@ import com.patrykstryczek.secondtry.model.Position;
 import com.patrykstryczek.secondtry.DistanceCalculator;
 
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,14 +41,19 @@ public class Calculations {
         ArrayList<Double> poweredypos = new ArrayList<>();
         List<KnownNetwork> averagePosition = new ArrayList<>();
 
+        //Average value of RSSI
         for (KnownNetwork knownNetwork:results) {
             List<Integer> tempRSSI = new ArrayList<Integer>();
             tempRSSI = rssiHist.get(knownNetwork.getBssid());
             int average = 0;
-            for (Integer i : tempRSSI)
+            for (Integer i : tempRSSI) {
                 average += i;
+            }
             average /= tempRSSI.size();
-            knownNetwork.setRssiValue(average);
+            Log.d("RSSI known powers size", String.valueOf(tempRSSI.size()));
+            Log.d("Average RSSI of ", knownNetwork.getSsid() + " : " + average);
+
+//            knownNetwork.setRssiValue(average);
         }
 
 
